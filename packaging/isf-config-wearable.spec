@@ -19,9 +19,20 @@ ISF configuration files for wearable profile
 %install
 rm -rf %{buildroot}
 %__mkdir_p %{buildroot}%{_sysconfdir}/scim/conf
+%__mkdir_p %{buildroot}%{_prefix}/lib/systemd/user
+%__mkdir_p %{buildroot}%{_prefix}/lib/systemd/user/default.target.wants
+
 %__cp etc/scim/conf/* %{buildroot}%{_sysconfdir}/scim/conf
+%__cp scim.service %{buildroot}%{_prefix}/lib/systemd/user
+%__cp scim.path %{buildroot}%{_prefix}/lib/systemd/user
+
+%post
+ln -sf %{_prefix}/lib/systemd/user/scim.path %{_prefix}/lib/systemd/user/default.target.wants/scim.path
 
 %files
+%manifest %{name}.manifest
 %defattr(-,root,root,-)
 /etc/scim/conf/*
+%{_prefix}/lib/systemd/user/scim.service
+%{_prefix}/lib/systemd/user/scim.path
 %license LICENSE.APLv2
